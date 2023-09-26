@@ -16,6 +16,14 @@ export const createSysRemotes = (data) => {
   })
 }
 
+export const executeRemoteCmd = (data) => {
+  return service({
+    url: '/sysRemotes/executeRemoteCmd',
+    method: 'post',
+    data
+  })
+}
+
 // @Tags SysRemotes
 // @Summary 删除远程服务器配置表
 // @Security ApiKeyAuth

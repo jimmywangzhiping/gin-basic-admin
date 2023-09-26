@@ -74,6 +74,7 @@ func Routers() *gin.Engine {
 	{
 		remoteServerRouter := router.RouterGroupApp.RemoteServer
 		remoteServerRouter.InitSysRemotesRouter(PrivateGroup)
+		remoteServerRouter.InitSysRemoteRecordRouter(PrivateGroup)
 	}
 
 	global.GVA_LOG.Info("router register success")

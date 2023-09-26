@@ -11,6 +11,8 @@ import (
 type SysRemotesService struct {
 }
 
+// var SysRemoteRecordService = new(SysRemoteRecordService)
+
 // CreateSysRemotes 创建远程服务器配置表记录
 // Author [piexlmax](https://github.com/piexlmax)
 func (sysRemotesService *SysRemotesService) CreateSysRemotes(sysRemotes *remoteServer.SysRemotes) (err error) {

@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -9,6 +10,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/service"
 	"github.com/flipped-aurora/gin-vue-admin/server/utils"
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 var casbinService = service.ServiceGroupApp.SystemServiceGroup.CasbinService
@@ -18,6 +20,8 @@ func CasbinHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if global.GVA_CONFIG.System.Env != "develop" {
 			waitUse, _ := utils.GetClaims(c)
+			waitUseStr := fmt.Sprintf("%+v", waitUse)
+			global.GVA_LOG.Info("waitUse", zap.String("waitUse", waitUseStr))
 			//获取请求的PATH
 			path := c.Request.URL.Path
 			obj := strings.TrimPrefix(path, global.GVA_CONFIG.System.RouterPrefix)

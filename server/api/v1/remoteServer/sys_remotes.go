@@ -1,22 +1,24 @@
 package remoteServer
 
 import (
+	"strconv"
+
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
-    "github.com/flipped-aurora/gin-vue-admin/server/model/remoteServer"
-    "github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
-    remoteServerReq "github.com/flipped-aurora/gin-vue-admin/server/model/remoteServer/request"
-    "github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
-    "github.com/flipped-aurora/gin-vue-admin/server/service"
-    "github.com/gin-gonic/gin"
-    "go.uber.org/zap"
-    "github.com/flipped-aurora/gin-vue-admin/server/utils"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/remoteServer"
+	remoteServerReq "github.com/flipped-aurora/gin-vue-admin/server/model/remoteServer/request"
+	"github.com/flipped-aurora/gin-vue-admin/server/service"
+	"github.com/flipped-aurora/gin-vue-admin/server/utils"
+	"github.com/flipped-aurora/gin-vue-admin/server/utils/ssh"
+	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 type SysRemotesApi struct {
 }
 
 var sysRemotesService = service.ServiceGroupApp.RemoteServerServiceGroup.SysRemotesService
-
 
 // CreateSysRemotes 创建远程服务器配置表
 // @Tags SysRemotes
@@ -34,22 +36,22 @@ func (sysRemotesApi *SysRemotesApi) CreateSysRemotes(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-    sysRemotes.CreatedBy = utils.GetUserID(c)
-    verify := utils.Rules{
-        "Name":{utils.NotEmpty()},
-        "Code":{utils.NotEmpty()},
-        "IsRemove":{utils.NotEmpty()},
-        "Ip":{utils.NotEmpty()},
-        "Port":{utils.NotEmpty()},
-        "User":{utils.NotEmpty()},
-        "Password":{utils.NotEmpty()},
-    }
+	sysRemotes.CreatedBy = utils.GetUserID(c)
+	verify := utils.Rules{
+		"Name":     {utils.NotEmpty()},
+		"Code":     {utils.NotEmpty()},
+		"IsRemove": {utils.NotEmpty()},
+		"Ip":       {utils.NotEmpty()},
+		"Port":     {utils.NotEmpty()},
+		"User":     {utils.NotEmpty()},
+		"Password": {utils.NotEmpty()},
+	}
 	if err := utils.Verify(sysRemotes, verify); err != nil {
-    		response.FailWithMessage(err.Error(), c)
-    		return
-    	}
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
 	if err := sysRemotesService.CreateSysRemotes(&sysRemotes); err != nil {
-        global.GVA_LOG.Error("创建失败!", zap.Error(err))
+		global.GVA_LOG.Error("创建失败!", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
 	} else {
 		response.OkWithMessage("创建成功", c)
@@ -72,9 +74,9 @@ func (sysRemotesApi *SysRemotesApi) DeleteSysRemotes(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-    sysRemotes.DeletedBy = utils.GetUserID(c)
+	sysRemotes.DeletedBy = utils.GetUserID(c)
 	if err := sysRemotesService.DeleteSysRemotes(sysRemotes); err != nil {
-        global.GVA_LOG.Error("删除失败!", zap.Error(err))
+		global.GVA_LOG.Error("删除失败!", zap.Error(err))
 		response.FailWithMessage("删除失败", c)
 	} else {
 		response.OkWithMessage("删除成功", c)
@@ -92,14 +94,14 @@ func (sysRemotesApi *SysRemotesApi) DeleteSysRemotes(c *gin.Context) {
 // @Router /sysRemotes/deleteSysRemotesByIds [delete]
 func (sysRemotesApi *SysRemotesApi) DeleteSysRemotesByIds(c *gin.Context) {
 	var IDS request.IdsReq
-    err := c.ShouldBindJSON(&IDS)
+	err := c.ShouldBindJSON(&IDS)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-    deletedBy := utils.GetUserID(c)
-	if err := sysRemotesService.DeleteSysRemotesByIds(IDS,deletedBy); err != nil {
-        global.GVA_LOG.Error("批量删除失败!", zap.Error(err))
+	deletedBy := utils.GetUserID(c)
+	if err := sysRemotesService.DeleteSysRemotesByIds(IDS, deletedBy); err != nil {
+		global.GVA_LOG.Error("批量删除失败!", zap.Error(err))
 		response.FailWithMessage("批量删除失败", c)
 	} else {
 		response.OkWithMessage("批量删除成功", c)
@@ -122,22 +124,22 @@ func (sysRemotesApi *SysRemotesApi) UpdateSysRemotes(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-    sysRemotes.UpdatedBy = utils.GetUserID(c)
-      verify := utils.Rules{
-          "Name":{utils.NotEmpty()},
-          "Code":{utils.NotEmpty()},
-          "IsRemove":{utils.NotEmpty()},
-          "Ip":{utils.NotEmpty()},
-          "Port":{utils.NotEmpty()},
-          "User":{utils.NotEmpty()},
-          "Password":{utils.NotEmpty()},
-      }
-    if err := utils.Verify(sysRemotes, verify); err != nil {
-      	response.FailWithMessage(err.Error(), c)
-      	return
-     }
+	sysRemotes.UpdatedBy = utils.GetUserID(c)
+	verify := utils.Rules{
+		"Name":     {utils.NotEmpty()},
+		"Code":     {utils.NotEmpty()},
+		"IsRemove": {utils.NotEmpty()},
+		"Ip":       {utils.NotEmpty()},
+		"Port":     {utils.NotEmpty()},
+		"User":     {utils.NotEmpty()},
+		"Password": {utils.NotEmpty()},
+	}
+	if err := utils.Verify(sysRemotes, verify); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
 	if err := sysRemotesService.UpdateSysRemotes(sysRemotes); err != nil {
-        global.GVA_LOG.Error("更新失败!", zap.Error(err))
+		global.GVA_LOG.Error("更新失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)
 	} else {
 		response.OkWithMessage("更新成功", c)
@@ -161,7 +163,7 @@ func (sysRemotesApi *SysRemotesApi) FindSysRemotes(c *gin.Context) {
 		return
 	}
 	if resysRemotes, err := sysRemotesService.GetSysRemotes(sysRemotes.ID); err != nil {
-        global.GVA_LOG.Error("查询失败!", zap.Error(err))
+		global.GVA_LOG.Error("查询失败!", zap.Error(err))
 		response.FailWithMessage("查询失败", c)
 	} else {
 		response.OkWithData(gin.H{"resysRemotes": resysRemotes}, c)
@@ -185,14 +187,61 @@ func (sysRemotesApi *SysRemotesApi) GetSysRemotesList(c *gin.Context) {
 		return
 	}
 	if list, total, err := sysRemotesService.GetSysRemotesInfoList(pageInfo); err != nil {
-	    global.GVA_LOG.Error("获取失败!", zap.Error(err))
-        response.FailWithMessage("获取失败", c)
-    } else {
-        response.OkWithDetailed(response.PageResult{
-            List:     list,
-            Total:    total,
-            Page:     pageInfo.Page,
-            PageSize: pageInfo.PageSize,
-        }, "获取成功", c)
-    }
+		global.GVA_LOG.Error("获取失败!", zap.Error(err))
+		response.FailWithMessage("获取失败", c)
+	} else {
+		response.OkWithDetailed(response.PageResult{
+			List:     list,
+			Total:    total,
+			Page:     pageInfo.Page,
+			PageSize: pageInfo.PageSize,
+		}, "获取成功", c)
+	}
+}
+
+// 远程执行命令
+func (sysRemotesService *SysRemotesApi) ExecuteRemoteCmd(c *gin.Context) {
+	var sysRemoteExcute remoteServerReq.SysRemoteExcute
+	err := c.ShouldBindJSON(&sysRemoteExcute)
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	var sysRemotes remoteServer.SysRemotes
+	err = global.GVA_DB.Where("id =?", sysRemoteExcute.Id).First(&sysRemotes).Error
+	if err != nil {
+		return
+	}
+	if !*sysRemotes.Status {
+		return
+	}
+	port, err := strconv.Atoi(sysRemotes.Port)
+	if err != nil {
+		return
+	}
+	sshConfig := ssh.SSHConfig{
+		Host:     sysRemotes.Ip,
+		Port:     port,
+		User:     sysRemotes.User,
+		Password: sysRemotes.Password,
+	}
+	// 创建ssh客户端
+	sshClient, err := ssh.NewClient(sshConfig)
+	if err != nil {
+		return
+	}
+	// 执行远程命令
+	out, err := ssh.ExecuteRemoteCommand(sshClient, sysRemoteExcute.Cmd)
+	if err != nil {
+		return
+	}
+	defer sshClient.Close()
+	// defer 客户端
+	// 记录操作日志
+	sysRemoteRecord := &remoteServer.SysRemoteRecord{}
+	remoteID := int(sysRemoteExcute.Id)
+	sysRemoteRecord.RemoteId = &remoteID
+	sysRemoteRecord.Command = sysRemoteExcute.Cmd
+	sysRemoteRecord.Message = out
+	err = sysRemoteRecordService.CreateSysRemoteRecord(sysRemoteRecord)
 }

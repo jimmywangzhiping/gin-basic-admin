@@ -1,7 +1,7 @@
 package remoteServer
 
 import (
-	"github.com/flipped-aurora/gin-vue-admin/server/api/v1"
+	v1 "github.com/flipped-aurora/gin-vue-admin/server/api/v1"
 	"github.com/flipped-aurora/gin-vue-admin/server/middleware"
 	"github.com/gin-gonic/gin"
 )
@@ -15,13 +15,15 @@ func (s *SysRemotesRouter) InitSysRemotesRouter(Router *gin.RouterGroup) {
 	sysRemotesRouterWithoutRecord := Router.Group("sysRemotes")
 	var sysRemotesApi = v1.ApiGroupApp.RemoteServerApiGroup.SysRemotesApi
 	{
-		sysRemotesRouter.POST("createSysRemotes", sysRemotesApi.CreateSysRemotes)   // 新建远程服务器配置表
-		sysRemotesRouter.DELETE("deleteSysRemotes", sysRemotesApi.DeleteSysRemotes) // 删除远程服务器配置表
+		sysRemotesRouter.POST("createSysRemotes", sysRemotesApi.CreateSysRemotes)             // 新建远程服务器配置表
+		sysRemotesRouter.DELETE("deleteSysRemotes", sysRemotesApi.DeleteSysRemotes)           // 删除远程服务器配置表
 		sysRemotesRouter.DELETE("deleteSysRemotesByIds", sysRemotesApi.DeleteSysRemotesByIds) // 批量删除远程服务器配置表
-		sysRemotesRouter.PUT("updateSysRemotes", sysRemotesApi.UpdateSysRemotes)    // 更新远程服务器配置表
+		sysRemotesRouter.PUT("updateSysRemotes", sysRemotesApi.UpdateSysRemotes)              // 更新远程服务器配置表
+		sysRemotesRouter.POST("executeRemoteCmd", sysRemotesApi.ExecuteRemoteCmd)             // 执行远程服务器命令
 	}
 	{
-		sysRemotesRouterWithoutRecord.GET("findSysRemotes", sysRemotesApi.FindSysRemotes)        // 根据ID获取远程服务器配置表
-		sysRemotesRouterWithoutRecord.GET("getSysRemotesList", sysRemotesApi.GetSysRemotesList)  // 获取远程服务器配置表列表
+		sysRemotesRouterWithoutRecord.GET("findSysRemotes", sysRemotesApi.FindSysRemotes)       // 根据ID获取远程服务器配置表
+		sysRemotesRouterWithoutRecord.GET("getSysRemotesList", sysRemotesApi.GetSysRemotesList) // 获取远程服务器配置表列表
 	}
+
 }
