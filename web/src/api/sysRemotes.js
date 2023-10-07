@@ -17,6 +17,7 @@ export const createSysRemotes = (data) => {
 }
 
 export const executeRemoteCmd = (data) => {
+  console.log(data)
   return service({
     url: '/sysRemotes/executeRemoteCmd',
     method: 'post',

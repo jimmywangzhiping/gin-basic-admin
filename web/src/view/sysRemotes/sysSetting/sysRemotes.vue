@@ -368,10 +368,10 @@
         >
           <el-form-item
             label="命令"
-            prop="cmd"
+            prop="Cmd"
           >
             <el-input
-              v-model="formCmdData.cmd"
+              v-model="formCmdData.Cmd"
               :clearable="true"
               placeholder="请输入"
             />
@@ -469,8 +469,8 @@ const formData = ref({
 })
 
 const formCmdData = ref({
-  cmd: '',
-  id: 0,
+  Cmd: '',
+  Id: 0,
 })
 
 // 验证规则
@@ -694,8 +694,9 @@ const updateSysRemotesFunc = async(row) => {
     dialogFormVisible.value = true
   }
 }
-const executeRemoteCmd1 = async() => {
+const executeRemoteCmd1 = async(row) => {
   dialogFormVisible1.value = true
+  formCmdData.value.Id = row.ID
 }
 
 // 删除行
@@ -777,7 +778,7 @@ const closeDialog = () => {
 const closeDialog1 = () => {
   dialogFormVisible1.value = false
   formCmdData.value = {
-    cmd: '',
+    Cmd: '',
   }
 }
 // 弹窗确定
@@ -810,7 +811,6 @@ const enterDialog = async() => {
 const enterDialog1 = async(row) => {
   elFormRef1.value?.validate(async(valid) => {
     if (!valid) return
-    formCmdData.value.id = row.ID
     // formCmdData.value.cmd = row.cmd
     const res = await executeRemoteCmd(formCmdData.value)
     if (res.code === 0) {

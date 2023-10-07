@@ -2,10 +2,12 @@ package system
 
 import (
 	"errors"
+
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/system"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/system/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/system/response"
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
@@ -50,6 +52,7 @@ func (a *AuthorityBtnService) SetAuthorityBtn(req request.SysAuthorityBtnReq) (e
 }
 
 func (a *AuthorityBtnService) CanRemoveAuthorityBtn(ID string) (err error) {
+	global.GVA_LOG.Debug("ID", zap.String("ID", ID))
 	fErr := global.GVA_DB.First(&system.SysAuthorityBtn{}, "sys_base_menu_btn_id = ?", ID).Error
 	if errors.Is(fErr, gorm.ErrRecordNotFound) {
 		return nil

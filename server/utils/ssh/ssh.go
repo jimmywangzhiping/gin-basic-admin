@@ -56,7 +56,7 @@ func NewClient(config SSHConfig) (*ssh.Client, error) {
 	// 连接ssh服务器
 	sshClient, err := ssh.Dial("tcp", config.Host+":"+strconv.Itoa(config.Port), sshConfig)
 	if err != nil {
-		log.Fatal("无法连接到SSH服务器", err)
+		log.Default().Println(`无法连接到SSH服务器: `, err)
 		return nil, err
 	}
 	return sshClient, nil
@@ -66,13 +66,13 @@ func NewClient(config SSHConfig) (*ssh.Client, error) {
 func ExecuteRemoteCommand(client *ssh.Client, command string) (string, error) {
 	session, err := client.NewSession()
 	if err != nil {
-		log.Fatal("创建ssh会话失败", err)
+		log.Default().Println("创建ssh会话失败", err)
 	}
 	defer session.Close()
 	// 执行远程命令
 	output, err := session.CombinedOutput(command)
 	if err != nil {
-		log.Fatalf("执行SSH命令失败: %v", err)
+		log.Default().Println("执行SSH命令失败:", err)
 	}
 	return string(output), nil
 }

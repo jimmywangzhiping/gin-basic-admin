@@ -210,13 +210,16 @@ func (sysRemotesService *SysRemotesApi) ExecuteRemoteCmd(c *gin.Context) {
 	var sysRemotes remoteServer.SysRemotes
 	err = global.GVA_DB.Where("id =?", sysRemoteExcute.Id).First(&sysRemotes).Error
 	if err != nil {
+		response.FailWithMessage(err.Error(), c)
 		return
 	}
 	if !*sysRemotes.Status {
+		response.FailWithMessage(err.Error(), c)
 		return
 	}
 	port, err := strconv.Atoi(sysRemotes.Port)
 	if err != nil {
+		response.FailWithMessage(err.Error(), c)
 		return
 	}
 	sshConfig := ssh.SSHConfig{
@@ -225,23 +228,36 @@ func (sysRemotesService *SysRemotesApi) ExecuteRemoteCmd(c *gin.Context) {
 		User:     sysRemotes.User,
 		Password: sysRemotes.Password,
 	}
-	// 创建ssh客户端
-	sshClient, err := ssh.NewClient(sshConfig)
-	if err != nil {
-		return
-	}
-	// 执行远程命令
-	out, err := ssh.ExecuteRemoteCommand(sshClient, sysRemoteExcute.Cmd)
-	if err != nil {
-		return
-	}
-	defer sshClient.Close()
-	// defer 客户端
 	// 记录操作日志
 	sysRemoteRecord := &remoteServer.SysRemoteRecord{}
 	remoteID := int(sysRemoteExcute.Id)
 	sysRemoteRecord.RemoteId = &remoteID
 	sysRemoteRecord.Command = sysRemoteExcute.Cmd
+	// 创建ssh客户端
+	sshClient, err := ssh.NewClient(sshConfig)
+	if err != nil {
+		sysRemoteRecord.Message = err.Error()
+		status := false
+		sysRemoteRecord.Status = &status
+		err = sysRemoteRecordService.CreateSysRemoteRecord(sysRemoteRecord)
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	// 执行远程命令
+	out, err := ssh.ExecuteRemoteCommand(sshClient, sysRemoteExcute.Cmd)
+	if err != nil {
+		sysRemoteRecord.Message = err.Error()
+		status := false
+		sysRemoteRecord.Status = &status
+		err = sysRemoteRecordService.CreateSysRemoteRecord(sysRemoteRecord)
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	defer sshClient.Close()
+	// defer 客户端
 	sysRemoteRecord.Message = out
-	err = sysRemoteRecordService.CreateSysRemoteRecord(sysRemoteRecord)
+	status := true
+	sysRemoteRecord.Status = &status
+	sysRemoteRecordService.CreateSysRemoteRecord(sysRemoteRecord)
+	response.Ok(c)
 }

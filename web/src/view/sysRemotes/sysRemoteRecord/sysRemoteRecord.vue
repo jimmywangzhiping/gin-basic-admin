@@ -50,12 +50,12 @@
     </div>
     <div class="gva-table-box">
       <div class="gva-btn-list">
-        <el-button
+        <!-- <el-button
           type="primary"
           icon="plus"
           @click="openDialog"
-        >新增</el-button>
-        <el-popover
+        >新增</el-button> -->
+        <!-- <el-popover
           v-model:visible="deleteVisible"
           :disabled="!multipleSelection.length"
           placement="top"
@@ -81,7 +81,7 @@
               @click="deleteVisible = true"
             >删除</el-button>
           </template>
-        </el-popover>
+        </el-popover> -->
       </div>
       <el-table
         ref="multipleTable"
@@ -91,10 +91,10 @@
         row-key="ID"
         @selection-change="handleSelectionChange"
       >
-        <el-table-column
+        <!-- <el-table-column
           type="selection"
           width="55"
-        />
+        /> -->
         <el-table-column
           align="left"
           label="日期"
@@ -126,7 +126,7 @@
           align="left"
           label="消息"
           prop="message"
-          width="120"
+          width="200"
         />
         <el-table-column
           align="left"
@@ -142,19 +142,19 @@
               <el-icon style="margin-right: 5px"><InfoFilled /></el-icon>
               查看详情
             </el-button>
-            <el-button
+            <!-- <el-button
               type="primary"
               link
               icon="edit"
               class="table-button"
               @click="updateSysRemoteRecordFunc(scope.row)"
-            >变更</el-button>
-            <el-button
+            >变更</el-button> -->
+            <!-- <el-button
               type="primary"
               link
               icon="delete"
               @click="deleteRow(scope.row)"
-            >删除</el-button>
+            >删除</el-button> -->
           </template>
         </el-table-column>
       </el-table>
