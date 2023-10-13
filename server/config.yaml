@@ -111,7 +111,7 @@ mysql:
     db-name: gva
     username: root
     password: sa123456
-    path: 127.0.0.1
+    path: 60.204.187.90
     engine: ""
     log-mode: error
     max-idle-conns: 10
@@ -155,7 +155,7 @@ qiniu:
     use-https: false
     use-cdn-domains: false
 redis:
-    addr: 127.0.0.1:6379
+    addr: 60.204.187.90:6379
     password: ""
     db: 0
 sqlite:
